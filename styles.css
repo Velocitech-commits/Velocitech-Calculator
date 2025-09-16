@@ -38,9 +38,39 @@ header {
   gap: 10px;
   flex-wrap: wrap;
 }
-h1 {
-  font-size: 18px;
-  margin: 0;
+/* Site title replaced by responsive logo image */
+.site-title { display:flex; align-items:center; gap:10px; }
+/* Hide raw img elements by default; theme rules below will show the correct one. This prevents both
+  images from being visible at the same time when cascade conflicts occur. */
+.site-title img { display: none !important; height: auto !important; max-width: 240px !important; max-height: 56px !important; }
+/* Ensure the logo stays compact on small screens - sizing is controlled on the .site-logo class below */
+@media (max-width:760px){ /* no width forcing here to avoid stretching */ }
+
+/* Theme-aware switching: prefer the negative (white) logo in dark mode */
+/* Theme-specific logo visibility: default to showing the light-mode logo and hide the dark one */
+.logo-light { display: none !important; }
+.logo-dark { display: none !important; }
+/* Explicitly show only the appropriate logo for the active theme. Use !important to avoid cascade conflicts
+   so there is never more than one visible logo. */
+body[data-theme="light"] .logo-light { display: block !important; }
+body[data-theme="light"] .logo-dark { display: none !important; }
+body[data-theme="dark"] .logo-light { display: none !important; }
+body[data-theme="dark"] .logo-dark { display: block !important; }
+/* Responsive sizing: preserve aspect ratio and avoid stretching. Use max-width and max-height; width:auto keeps
+   intrinsic aspect ratio while allowing the image to scale down. */
+.site-title .site-logo {
+  display: block;
+  width: auto !important;
+  height: auto !important;
+  max-width: min(45vw, 240px);
+  max-height: 56px;
+  object-fit: contain;
+}
+.site-title .site-logo.logo-dark { /* in case the dark asset needs slight contrast tweak */
+  filter: none;
+}
+@media (max-width:760px){
+  .site-title .site-logo { max-width: min(50vw, 180px); max-height: 44px; }
 }
 .toolbar {
   display: flex;

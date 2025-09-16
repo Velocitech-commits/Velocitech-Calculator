@@ -9,7 +9,12 @@
 <body data-theme="light">
   <div class="container">
     <header>
-      <h1>Velocitech Calculator</h1>
+      <div class="site-title">
+        <!-- Light-mode logo (visible when body[data-theme="light"]) -->
+  <img id="site-logo-light" class="site-logo logo-light" src="assets/logoclaro.png" alt="Velocitech logo (dark)" />
+        <!-- Dark-mode (negative/white) logo (visible when body[data-theme="dark"]) -->
+  <img id="site-logo-dark" class="site-logo logo-dark" src="assets/logooscuro.png" alt="Velocitech logo (light)" />
+      </div>
       <div class="toolbar" id="toolbar">
         <div id="modeCtl" class="seg glass">
           <input type="radio" name="m" id="summer" checked><label for="summer">Verano</label>
@@ -32,7 +37,7 @@
         <input type="file" id="file-import" class="hidden" accept=".velocitech,application/json">
         <button id="btn-import" class="btn glass">Importar</button>
 
-        <div id="debugCtl" class="seg glass">
+        <div id="debugCtl" class="seg glass" style="display:none;">
           <input type="checkbox" id="debug"><label for="debug">Debug hotspots</label>
         </div>
         <button id="resetBtn" class="btn glass">Reiniciar</button>
