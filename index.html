@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Velocitech Calculator</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="light">
+  <div class="container">
+    <header>
+      <h1>Velocitech Calculator</h1>
+      <div class="toolbar" id="toolbar">
+        <div id="modeCtl" class="seg glass">
+          <input type="radio" name="m" id="summer" checked><label for="summer">Verano</label>
+          <input type="radio" name="m" id="winter"><label for="winter">Invierno</label>
+        </div>
+        <div id="themeCtl" class="seg glass">
+          <input type="radio" name="t" id="light" checked><label for="light">Claro</label>
+          <input type="radio" name="t" id="dark"><label for="dark">Oscuro</label>
+        </div>
+        <div id="langCtl" class="seg glass">
+          <input type="radio" name="l" id="lang-es" checked><label for="lang-es">ES</label>
+          <input type="radio" name="l" id="lang-en"><label for="lang-en">EN</label>
+        </div>
+
+        <div class="namebox glass" style="padding:6px 10px">
+          <label class="small" for="player-name">Nombre:</label>
+          <input id="player-name" placeholder="(opcional)">
+        </div>
+        <button id="btn-export" class="btn glass">Exportar .velocitech</button>
+        <input type="file" id="file-import" class="hidden" accept=".velocitech,application/json">
+        <button id="btn-import" class="btn glass">Importar</button>
+
+        <div id="debugCtl" class="seg glass">
+          <input type="checkbox" id="debug"><label for="debug">Debug hotspots</label>
+        </div>
+        <button id="resetBtn" class="btn glass">Reiniciar</button>
+      </div>
+    </header>
+
+    <div class="main">
+      <div>
+        <div class="stage" id="stage">
+          <img id="board" src="assets/VERANO.png" alt="Tablero">
+          <!-- SUMMER pens -->
+          <div class="overlay" id="overlay-summer">
+            <div class="pen" data-pen="bosque-semejanza" style="left:14%; top:13%; width:28%; height:20%;">
+              <div class="slots" data-cap="6"></div>
+            </div>
+            <div class="pen" data-pen="rey-selva" style="left:65%; top:16%; width:11%; height:11%;">
+              <div class="slots" data-cap="1"></div>
+            </div>
+            <div class="pen" data-pen="prado-diferencia" style="left:60%; top:43%; width:28%; height:18%;" data-inset-horizontal="0%">
+              <div class="slots" data-cap="6"></div>
+            </div>
+            <div class="pen" data-pen="pradera-amor" style="left:19%; top:66%; width:19%; height:21%;">
+              <div class="slots" data-cap="6"></div>
+            </div>
+            <div class="pen" data-pen="isla-solitaria" style="left:72%; top:64%; width:16%; height:17%;">
+              <div class="slots" data-cap="1"></div>
+            </div>
+            <div class="pen" data-pen="rio" style="left:50%; top:12%; width:9%; height:80%;">
+              <div class="slots" data-cap="12"></div>
+            </div>
+            <div class="pen" data-pen="trio-frondoso" style="left:15%; top:41%; width:18%; height:18%;">
+              <div class="slots" data-cap="3"></div>
+            </div>
+          </div>
+          <!-- WINTER pens -->
+          <div class="overlay" id="overlay-winter" hidden>
+            <div class="pen" data-pen="bosque-ordenado" style="left:15%; top:15%; width:24%; height:18%;">
+              <div class="slots" data-cap="6"></div>
+            </div>
+            <div class="pen" data-pen="puesto-observacion" style="left:60%; top:17%; width:16%; height:15%;">
+              <div class="slots" data-cap="1"></div>
+            </div>
+            <!-- Add River for Winter mode (same as summer rio) -->
+            <div class="pen" data-pen="rio" style="left:32%; top:62%; width:9%; height:31%;">
+              <div class="slots" data-cap="12"></div>
+            </div>
+            <!-- Puente de los Enamorados: ahora separado en dos recintos manejables globalmente -->
+            <!-- Puente de los Enamorados - lado izquierdo (1). You can edit the
+                 token size variables directly on this element:
+                 --bridge-token-width (percentage, default 120%)
+                 --bridge-token-max-height (e.g. 8vh)
+                 --bridge-token-scale (optional extra scale multiplier)
+            -->
+            <div class="pen" data-pen="puente-enamorados-1" style="left:28%; top:37%; width:21%; height:19%; --bridge-token-width:120%; --bridge-token-max-height:8vh; --bridge-token-scale:1;">
+              <!-- #edita aqui: puente enamorados 1 - ajusta left/top/width/height en este elemento -->
+              <div class="slots" data-cap="6"></div>
+            </div>
+            <!-- Puente de los Enamorados - lado derecho (2). Edit the same variables here if you want asymmetry. -->
+            <div class="pen" data-pen="puente-enamorados-2" style="left:54%; top:37%; width:19%; height:19%; --bridge-token-width:120%; --bridge-token-max-height:8vh; --bridge-token-scale:1;">
+              <!-- #edita aqui: puente enamorados 2 - ajusta left/top/width/height en este elemento -->
+              <div class="slots" data-cap="6"></div>
+            </div>
+            <!-- Pirámide: puedes editar los tamaños de los dinosaurios dentro de este recinto
+                 ajustando las variables CSS en el atributo style de este elemento.
+                 Ejemplo: style="--piramide-token-width:60%; --piramide-token-max-height:5vh"
+                 --piramide-token-width: ancho del token como porcentaje del slot
+                 --piramide-token-max-height: altura máxima de la miniatura (ej. 5vh) -->
+            <!-- %% PIRAMIDE: empieza aqui - cada piso tiene atributos style="left: top: width: height:" -->
+            <div class="pen" data-pen="piramide" style="left:40%; top:63%; width:50%; height:20%; --piramide-token-width:25%; --piramide-token-max-height:3vh;">
+              <!-- %% piso inferior (bottom) - edita left/top/width/height aquí -->
+              <div class="pyr-bottom" style="left:7%; top:75%; width:73%; height:18%; position:absolute;"></div>
+              <!-- %% piso medio (middle) - edita left/top/width/height aquí -->
+              <div class="pyr-middle" style="left:18%; top:53%; width:50%; height:8%; position:absolute;"></div>
+              <!-- %% piso superior (top) - edita left/top/width/height aquí -->
+              <div class="pyr-top" style="left:28%; top:28%; width:30%; height:6%; position:absolute;"></div>
+            </div>
+            <!-- %% PIRAMIDE: termina aqui -->
+            <!-- Cuarentena: edita el tamaño de la miniatura con variables inline en el style del pen.
+                 Ejemplo: style="--cuarentena-token-width:50%; --cuarentena-token-scale:0.9; --cuarentena-token-max-height:80%" -->
+            <div class="pen" data-pen="cuarentena" style="left:14%; top:67%; width:15%; height:15%; --cuarentena-token-width:70%; --cuarentena-token-scale:1; --cuarentena-token-max-height:95%;">
+              <div class="slots" data-cap="1"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="palette glass" id="palette"></div>
+      </div>
+
+      <aside class="panel">
+        <div class="card glass">
+          <h3>Puntuación en vivo</h3>
+          <div id="score-breakdown"></div>
+          <div>
+            <span id="score-total-label" class="score-total-label">Puntuación total</span>
+            <div id="score-total" class="total">0</div>
+          </div>
+        </div>
+        <div class="card glass">
+          <h3>Ajustes con rivales</h3>
+      <div id="rey-container">
+        <label id="rey-label">Rey de la Selva:</label>
+        <!-- Retain this container only to show Rey info when in Summer; the rival inputs were removed
+           per new UX: only a single checkbox will appear at the bottom of the sidebar when a
+           dinosaur is present in the rey pen. -->
+      </div>
+          <div id="puesto-container">
+            <label id="puesto-label"></label>
+            <input id="input-derecha" type="number" min="0" value="0">
+          </div>
+        </div>
+        <!-- Persistent bottom checkbox: appears only when a dinosaur is placed in Rey (Verano).
+             Label is populated dynamically to include the species name. -->
+        <div id="rey-self-bottom" class="card glass" style="margin-top:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input id="input-rey-self" type="checkbox">
+            <label for="input-rey-self" id="input-rey-self-label" style="font-size:13px; margin:0;"></label>
+          </div>
+        </div>
+        <div id="mode-rules" class="card glass" style="margin-top:8px;">
+          <h3 id="mode-rules-title">Reglas (modo)</h3>
+          <div id="mode-rules-body" style="font-size:13px; color:var(--muted);"></div>
+        </div>
+  <!-- %% PIRAMIDE EDITOR REMOVED: use inline styles on pyramid rows inside the HTML instead -->
+      </aside>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
